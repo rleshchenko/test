@@ -13,10 +13,20 @@
             width: fit-content;
             margin: 20px auto;
         }
+        #editable-title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: text; /* Indicate the text is editable */
+        }
     </style>
 </head>
 <body>
-    <h1>Занятие 1</h1>
+    <!-- Editable Title -->
+    <div id="editable-title" contenteditable="true">Занятие 1</div>
+
+    <!-- Form -->
     <form id="form-container">
         <!-- Date Selection -->
         <label for="date">Дата:</label>
@@ -33,22 +43,34 @@
         <input type="time" id="time" name="time">
         <br><br>
 
-        <button type="submit">Сохранить</button>
     </form>
     <br>
     <button id="screenshot-button">Сделать скриншот</button>
 
     <script>
         document.getElementById("screenshot-button").addEventListener("click", function () {
-            // Target the form to be captured
+            // Target the form and the editable title to be captured
             const form = document.getElementById("form-container");
+            const title = document.getElementById("editable-title");
 
-            // Use html2canvas to capture only the form
-            html2canvas(form, {
+            // Create a wrapper to capture both title and form
+            const wrapper = document.createElement("div");
+            wrapper.style.display = "inline-block"; // Ensure it wraps tightly around content
+            wrapper.appendChild(title.cloneNode(true)); // Clone title
+            wrapper.appendChild(form.cloneNode(true)); // Clone form
+
+            // Add the wrapper temporarily to the document
+            document.body.appendChild(wrapper);
+
+            // Use html2canvas to capture the title and form
+            html2canvas(wrapper, {
                 scrollX: 0,
                 scrollY: 0,
-                useCORS: true // Allow cross-origin images if any are present
+                useCORS: true
             }).then((canvas) => {
+                // Remove the temporary wrapper
+                document.body.removeChild(wrapper);
+
                 // Convert the canvas to a blob
                 canvas.toBlob((blob) => {
                     // Use the Clipboard API to copy the image to clipboard
@@ -57,7 +79,7 @@
                             "image/png": blob
                         })
                     ]).then(() => {
-                        alert("Скриншот формы сохранен в буфер обмена!");
+                        alert("Скриншот сохранен в буфер обмена!");
                     }).catch((err) => {
                         console.error("Ошибка копирования:", err);
                     });
