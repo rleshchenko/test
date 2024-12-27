@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form Screenshot Example</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        /* Add some styling to visualize the form better */
+        #form-container {
+            border: 1px solid #ccc;
+            padding: 20px;
+            width: fit-content;
+            margin: 20px auto;
+        }
+    </style>
 </head>
 <body>
     <h1>Занятие 1</h1>
@@ -23,6 +32,8 @@
         <label for="time">Время:</label>
         <input type="time" id="time" name="time">
         <br><br>
+
+        <button type="submit">Сохранить</button>
     </form>
     <br>
     <button id="screenshot-button">Сделать скриншот</button>
@@ -32,8 +43,12 @@
             // Target the form to be captured
             const form = document.getElementById("form-container");
 
-            // Use html2canvas to capture the screenshot
-            html2canvas(form).then((canvas) => {
+            // Use html2canvas to capture only the form
+            html2canvas(form, {
+                scrollX: 0,
+                scrollY: 0,
+                useCORS: true // Allow cross-origin images if any are present
+            }).then((canvas) => {
                 // Convert the canvas to a blob
                 canvas.toBlob((blob) => {
                     // Use the Clipboard API to copy the image to clipboard
@@ -42,7 +57,7 @@
                             "image/png": blob
                         })
                     ]).then(() => {
-                        alert("Скриншот сохранен в буфер обмена!");
+                        alert("Скриншот формы сохранен в буфер обмена!");
                     }).catch((err) => {
                         console.error("Ошибка копирования:", err);
                     });
