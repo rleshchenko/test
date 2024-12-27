@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Screenshot Example</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <h1>Занятие 1</h1>
+    <form id="form-container">
+        <!-- Date Selection -->
+        <label for="date">Дата:</label>
+        <input type="date" id="date" name="date">
+        <br><br>
+
+        <!-- Class Selection -->
+        <label for="class">Класс:</label>
+        <input type="text" id="class" name="class" placeholder="Введите класс">
+        <br><br>
+
+        <!-- Time Selection -->
+        <label for="time">Время:</label>
+        <input type="time" id="time" name="time">
+        <br><br>
+    </form>
+    <br>
+    <button id="screenshot-button">Сделать скриншот</button>
+
+    <script>
+        document.getElementById("screenshot-button").addEventListener("click", function () {
+            // Target the form to be captured
+            const form = document.getElementById("form-container");
+
+            // Use html2canvas to capture the screenshot
+            html2canvas(form).then((canvas) => {
+                // Convert the canvas to a blob
+                canvas.toBlob((blob) => {
+                    // Use the Clipboard API to copy the image to clipboard
+                    navigator.clipboard.write([
+                        new ClipboardItem({
+                            "image/png": blob
+                        })
+                    ]).then(() => {
+                        alert("Скриншот сохранен в буфер обмена!");
+                    }).catch((err) => {
+                        console.error("Ошибка копирования:", err);
+                    });
+                });
+            }).catch((err) => {
+                console.error("Ошибка захвата скриншота:", err);
+            });
+        });
+    </script>
+</body>
+</html>
